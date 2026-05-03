@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Desi AI Roast Generator 🔥</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <meta name="description" content="Desi AI Roast Generator - Create savage funny roasts in Hindi, Marathi, and English instantly.">
+  <meta name="keywords" content="roast generator, desi roast, funny AI, indian roast generator">
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+
+    textarea, select {
+      width: 80%;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #22c55e;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+
+    body.light {
+      background: #f1f5f9;
+      color: black;
+    }
+
+    body.light .card {
+      background: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🔥 Desi AI Roast Generator</h1>
+<p>India’s most savage AI roast machine 😈</p>
+
+<textarea id="input" placeholder="Enter name/topic (e.g. my friend Rahul 😂)"></textarea>
+
+<select id="lang">
+  <option>English</option>
+  <option>Hindi</option>
+  <option>Marathi</option>
+</select>
+
+<select id="style">
+  <option value="">Normal</option>
+  <option value="mrbeast">Dramatic</option>
+  <option value="emotional">Sarcastic</option>
+</select>
+
+<br>
+
+<button onclick="generate()">🔥 Roast Now</button>
+<button onclick="toggleTheme()">🌗 Mode</button>
+<button onclick="loadHistory()">📜 History</button>
+
+<div id="result"></div>
+<div id="history"></div>
+
+<script>
+async function generate() {
+  const input = document.getElementById("input").value;
+  const lang = document.getElementById("lang").value;
+  const style = document.getElementById("style").value;
+
+  const res = await fetch("/generate", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ input, lang, style })
+  });
+
+  const data = await res.json();
+
+  document.getElementById("result").innerHTML = `
+    <div class="card">
+      <pre id="text">${data.output}</pre>
+      <button onclick="copyText()">📋 Copy</button>
+    </div>
+  `;
+}
+
+function copyText() {
+  const text = document.getElementById("text").innerText;
+  navigator.clipboard.writeText(text);
+  alert("Copied!");
+}
+
+async function loadHistory() {
+  const res = await fetch("/history");
+  const data = await res.json();
+
+  document.getElementById("history").innerHTML =
+    data.map(item => `<div class="card">${item.output}</div>`).join("");
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("light");
+}
+</script>
+
+</body>
+</html>
